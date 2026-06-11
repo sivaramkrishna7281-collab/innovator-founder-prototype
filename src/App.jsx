@@ -1,13 +1,31 @@
 import React, { useState, useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import mockData from './data/mockData.json';
 
+// Inject Leaflet's map layout stylesheet directly into the document header dynamically
+if (typeof window !== 'undefined' && !document.getElementById('leaflet-css')) {
+  const L_CSS = document.createElement("link");
+  L_CSS.id = "leaflet-css";
+  L_CSS.rel = "stylesheet";
+  L_CSS.href = "https://unpkg.com";
+  document.head.appendChild(L_CSS);
+}
+
+// Helper component to smoothly slide the map frame when the active address switches
+function ChangeMapView({ coords }) {
+  const map = useMap();
+  map.setView(coords, 14);
+  return null;
+}
+
 export default function App() {
-  // Track selected property and current checked status state arrays
-  const [selectedPropertyId, setSelectedPropertyId] = useState(mockData.properties[0].id);
+  // Use the first property item object as the default selected state safe template
+  const defaultProperty = mockData.properties && mockData.properties.length > 0 ? mockData.properties[0] : null;
+  
+  const [selectedPropertyId, setSelectedPropertyId] = useState(defaultProperty ? defaultProperty.id : '');
   const [propertyMetrics, setPropertyMetrics] = useState([]);
   const [readinessScore, setReadinessScore] = useState(0);
 
-  // Sync state whenever the user switches between property addresses
   useEffect(() => {
     const currentProp = mockData.properties.find(p => p.id === selectedPropertyId);
     if (currentProp) {
@@ -15,7 +33,6 @@ export default function App() {
     }
   }, [selectedPropertyId]);
 
-  // Recalculate dynamic pie chart score data metrics
   useEffect(() => {
     let totalWeight = 0;
     let earnedWeight = 0;
@@ -38,150 +55,177 @@ export default function App() {
   };
 
   const activeProperty = mockData.properties.find(p => p.id === selectedPropertyId);
+  const mapCenter = activeProperty && activeProperty.coordinates ? activeProperty.coordinates : [51.4988, -0.1534];
+  const currentKpis = activeProperty && activeProperty.kpis ? activeProperty.kpis : { sqft: "0", avgPriceSqft: "0", epc: "-", valuation: "0" };
+
+  // Inline styling containers for deep ocean layout theme
+  const styles = {
+    wrapper: {
+      minHeight: '100vh',
+      color: '#f8fafc',
+      fontFamily: 'system-ui, -apple-system, sans-serif',
+      backgroundColor: '#031B2F', // Specific Deep Ocean Blue
+      backgroundImage: 'linear-gradient(to bottom, #021627, #031B2F, #010c14)',
+      paddingBottom: '40px'
+    },
+    header: {
+      backgroundColor: 'rgba(2, 22, 39, 0.85)',
+      borderBottom: '1px solid rgba(6, 182, 212, 0.2)',
+      padding: '20px 32px',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      flexWrap: 'wrap',
+      gap: '16px'
+    },
+    heading: {
+      color: '#EF4444', // Red Colour
+      margin: 0,
+      fontSize: '26px',
+      fontWeight: '900',
+      letterSpacing: '-0.025em'
+    },
+    kpiGrid: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+      gap: '16px',
+      maxWidth: '1200px',
+      margin: '32px auto',
+      padding: '0 24px'
+    },
+    kpiCard: (borderColor) => ({
+      backgroundColor: '#0b243a',
+      padding: '16px',
+      borderRadius: '12px',
+      border: `2px solid ${borderColor}`, // Dynamic alternating border colours
+      boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)'
+    }),
+    layoutGrid: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+      gap: '32px',
+      maxWidth: '1200px',
+      margin: '0 auto',
+      padding: '0 24px'
+    },
+    card: {
+      backgroundColor: '#0b243a',
+      padding: '24px',
+      borderRadius: '16px',
+      border: '1px solid rgba(255,255,255,0.08)',
+      boxShadow: '0 20px 25px -5px rgba(0,0,0,0.3)'
+    }
+  };
+
+  // Logic to dynamically switch score ring gauges based on current checklist status percentages
+  const getGaugeColor = () => {
+    if (readinessScore === 100) return '#10B981'; // Completed: Bright Emerald Green
+    if (readinessScore >= 50) return '#06B6D4';  // Medium: Ocean Cyan Blue
+    return '#F59E0B';                            // Low Input: Warning Amber
+  };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 font-sans antialiased">
+    <div style={styles.wrapper}>
       
-      {/* Ocean Blue Dashboard Header Canvas */}
-      <header className="bg-gradient-to-r from-cyan-900 via-blue-900 to-indigo-900 border-b border-cyan-800/40 py-6 px-8 sticky top-0 z-50 shadow-xl">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-2xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-400">
-              PropVerify <span className="font-light text-slate-300 text-lg">Intelligence</span>
-            </h1>
-            <p className="text-xs text-cyan-300 font-semibold tracking-widest uppercase mt-0.5">UK Home Office Endorsement Prototype</p>
-          </div>
-          
-          {/* Real Estate Address Selector Buttons */}
-          <div className="flex flex-wrap gap-2 bg-slate-950/60 p-1.5 rounded-xl border border-cyan-800/30">
-            {mockData.properties.map(p => (
-              <button
-                key={p.id}
-                onClick={() => setSelectedPropertyId(p.id)}
-                className={`px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200 ${
-                  selectedPropertyId === p.id 
-                    ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md shadow-cyan-500/20 scale-105' 
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-                }`}
-              >
-                📍 {p.address.split(',')[0]}
-              </button>
-            ))}
-          </div>
+      {/* Navigation Bar */}
+      <header style={styles.header}>
+        <div>
+          <h1 style={styles.heading}>PropVerify Intelligence</h1>
+          <p style={{ color: '#67e8f9', margin: '4px 0 0 0', fontSize: '12px', fontBg: 'bold', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+            UK HOME OFFICE ENDORSEMENT REVIEW PLATFORM
+          </p>
+        </div>
+
+        {/* Dynamic Interactive Tab Selectors */}
+        <div style={{ display: 'flex', gap: '8px', backgroundColor: 'rgba(0,0,0,0.4)', padding: '6px', borderRadius: '10px' }}>
+          {mockData.properties && mockData.properties.map(p => (
+            <button
+              key={p.id}
+              onClick={() => setSelectedPropertyId(p.id)}
+              style={{
+                padding: '8px 16px',
+                borderRadius: '8px',
+                fontSize: '12px',
+                fontWeight: 'bold',
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                backgroundColor: selectedPropertyId === p.id ? '#06b6d4' : 'transparent',
+                color: selectedPropertyId === p.id ? '#ffffff' : '#94a3b8'
+              }}
+            >
+              📍 {p.address ? p.address.split(',')[0] : 'Property'}
+            </button>
+          ))}
         </div>
       </header>
 
-      {/* Structured Dashboard Grid */}
-      <main className="max-w-7xl mx-auto my-8 px-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* AGGREGATED ASSET KPI ROW WITH ALTERNATING BORDERS */}
+      <section style={styles.kpiGrid}>
+        <div style={styles.kpiCard('#06B6D4')}> {/* Card 1: Neon Cyan */}
+          <span style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 'bold' }}>Internal Area</span>
+          <div style={{ fontSize: '22px', fontWeight: '900', marginTop: '4px' }}>{currentKpis.sqft} <span style={{ fontSize: '12px', fontWeight: 'normal', color: '#64748b' }}>sq ft</span></div>
+        </div>
+        <div style={styles.kpiCard('#10B981')}> {/* Card 2: Neon Emerald Green */}
+          <span style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 'bold' }}>Market Valuation</span>
+          <div style={{ fontSize: '22px', fontWeight: '900', marginTop: '4px', color: '#10B981' }}>{currentKpis.valuation}</div>
+        </div>
+        <div style={styles.kpiCard('#F59E0B')}> {/* Card 3: Neon Amber */}
+          <span style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 'bold' }}>EPC Energy Grade</span>
+          <div style={{ fontSize: '22px', fontWeight: '900', marginTop: '4px' }}>Band {currentKpis.epc}</div>
+        </div>
+        <div style={styles.kpiCard('#EC4899')}> {/* Card 4: Neon Pink */}
+          <span style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 'bold' }}>Rate / SqFt</span>
+          <div style={{ fontSize: '22px', fontWeight: '900', marginTop: '4px' }}>{currentKpis.avgPriceSqft}</div>
+        </div>
+      </section>
+
+      {/* Workspace Content split frame view */}
+      <div style={styles.layoutGrid}>
         
-        {/* Left Side: Property Information & Variables Checklist */}
-        <section className="lg:col-span-2 space-y-6">
-          <div className="bg-slate-850 bg-gradient-to-b from-slate-800 to-slate-900 p-6 rounded-2xl border border-cyan-900/40 shadow-xl">
-            <div className="mb-6 border-b border-slate-700/50 pb-4">
-              <span className="text-[10px] bg-cyan-950 text-cyan-400 border border-cyan-800 px-2.5 py-1 rounded font-bold uppercase tracking-wider">
+        {/* Left Hand Work Panel (2 Columns) */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', gridColumn: 'span 2 / span 2' }}>
+          
+          {/* Map canvas Block */}
+          <div style={styles.card}>
+            <h3 style={{ fontSize: '12px', color: '#94a3b8', margin: '0 0 12px 0', textTransform: 'uppercase', fontWeight: 'bold' }}>Geospatial Asset Context mapping</h3>
+            <div style={{ height: '240px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #1e293b' }}>
+              <MapContainer center={mapCenter} zoom={14} style={{ height: '100%', width: '100%' }} zoomControl={false}>
+                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                <Marker position={mapCenter}>
+                  <Popup><span style={{ color: '#000', fontWeight: 'bold' }}>{activeProperty?.address}</span></Popup>
+                </Marker>
+                <ChangeMapView coords={mapCenter} />
+              </MapContainer>
+            </div>
+          </div>
+
+          {/* Interactive Compliance Audit Checklist */}
+          <div style={styles.card}>
+            <div style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '12px', marginBottom: '20px' }}>
+              <span style={{ fontSize: '10px', backgroundColor: '#021627', color: '#22d3ee', border: '1px solid #0891b2', padding: '2px 8px', borderRadius: '4px', fontWeight: 'bold' }}>
                 {activeProperty?.type}
               </span>
-              <h2 className="text-xl font-bold mt-2 text-white">{activeProperty?.address}</h2>
-              <p className="text-sm text-slate-400 mt-1">Select transaction files to calculate pre-sale compliance risks.</p>
+              <h2 style={{ fontSize: '18px', fontWeight: 'bold', margin: '8px 0 0 0' }}>{activeProperty?.address}</h2>
             </div>
 
-            {/* Checklist Loop Container */}
-            <div className="space-y-3">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {propertyMetrics.map((metric) => (
                 <div 
                   key={metric.id}
                   onClick={() => toggleMetric(metric.id)}
-                  className={`p-4 rounded-xl border transition-all duration-200 cursor-pointer flex items-start gap-4 ${
-                    metric.checked 
-                      ? 'border-cyan-500 bg-cyan-950/20 shadow-md shadow-cyan-950/50' 
-                      : 'border-slate-700/60 bg-slate-800/40 hover:border-slate-600'
-                  }`}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'start',
+                    gap: '16px',
+                    padding: '14px',
+                    borderRadius: '10px',
+                    cursor: 'pointer',
+                    border: metric.checked ? '1px solid #06b6d4' : '1px solid rgba(255,255,255,0.05)',
+                    backgroundColor: metric.checked ? 'rgba(6, 182, 212, 0.05)' : 'rgba(255,255,255,0.02)'
+                  }}
                 >
                   <input 
-                    type="checkbox"
-                    checked={metric.checked}
-                    onChange={() => {}} // Handled by outer div onClick
-                    className="h-5 w-5 rounded text-cyan-500 border-slate-600 bg-slate-900 mt-0.5 cursor-pointer accent-cyan-500"
-                  />
-                  <div className="flex-1">
-                    <span className="text-sm font-bold text-slate-200 block leading-snug">{metric.label}</span>
-                    <div className="flex gap-3 mt-1.5 text-[11px] font-semibold text-slate-400">
-                      <span className="text-cyan-400 uppercase tracking-wider">{metric.category}</span>
-                      <span>•</span>
-                      <span>Weight Impact: +{metric.weight}%</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Right Side: Advanced Pie Chart Metrics Box */}
-        <section className="lg:col-span-1">
-          <div className="bg-slate-850 bg-gradient-to-b from-slate-800 to-slate-900 p-6 rounded-2xl border border-cyan-900/40 shadow-xl text-center sticky top-28">
-            <h3 className="text-xs uppercase font-extrabold tracking-widest text-slate-400 mb-6">Market Readiness Index</h3>
-            
-            {/* SVG Pie/Donut Chart Construction */}
-            <div className="relative w-48 h-48 mx-auto flex items-center justify-center">
-              <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                {/* Background Empty Circle Track */}
-                <circle 
-                  cx="50" cy="50" r="40" 
-                  stroke="#1e293b" strokeWidth="10" fill="transparent" 
-                />
-                {/* Dynamic Score Slice */}
-                <circle 
-                  cx="50" cy="50" r="40" 
-                  stroke="url(#oceanGrad)" strokeWidth="10" fill="transparent" 
-                  strokeDasharray="251.3"
-                  strokeDashoffset={251.3 - (251.3 * readinessScore) / 100}
-                  strokeLinecap="round"
-                  className="transition-all duration-500 ease-out"
-                />
-                {/* Color Gradients Defs */}
-                <defs>
-                  <linearGradient id="oceanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#06b6d4" />
-                    <stop offset="100%" stopColor="#10b981" />
-                  </linearGradient>
-                </defs>
-              </svg>
-
-              {/* Centered Absolute Label Data */}
-              <div className="absolute flex flex-col items-center">
-                <span className="text-4xl font-black text-white tracking-tight">{readinessScore}%</span>
-                <span className="text-[10px] tracking-wider uppercase text-cyan-400 font-bold mt-0.5">Verified</span>
-              </div>
-            </div>
-
-            {/* Strategic Diagnostic Output States */}
-            <div className="mt-8">
-              {readinessScore === 100 ? (
-                <div className="bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 p-4 rounded-xl text-xs font-bold leading-normal">
-                  🏆 BUYER READY STATUS APPROVED
-                  <span className="block font-normal text-slate-400 mt-1 text-[11px]">Transaction parameters validated. Listed on asset network data feeds safely.</span>
-                </div>
-              ) : readinessScore >= 50 ? (
-                <div className="bg-cyan-950/60 border border-cyan-500/40 text-cyan-300 p-4 rounded-xl text-xs font-bold leading-normal">
-                  ⚡ LIQUIDITY ANALYSIS ACTIVE
-                  <span className="block font-normal text-slate-400 mt-1 text-[11px]">Data registry files processing. Structural listing hold applied.</span>
-                </div>
-              ) : (
-                <div className="bg-slate-900/80 border border-slate-700/50 text-slate-400 p-4 rounded-xl text-xs font-medium">
-                  ⏳ AWAITING DATA INPUT
-                  <span className="block text-[11px] text-slate-500 mt-1 font-normal">Activate compliance checklist entries to run diagnostic matrix.</span>
-                </div>
-              )}
-            </div>
-
-            <div className="mt-6 border-t border-slate-700/50 pt-4 text-[10px] text-slate-500 font-bold uppercase tracking-wider">
-              PropVerify Global Database Engine
-            </div>
-          </div>
-        </section>
-
-      </main>
-    </div>
-  );
-}
+                    type="checkbox" 
+                    checked={metric.checked} 
+                    onChange={() => {}} 

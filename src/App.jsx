@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import mockData from './data/mockData.json';
+
 export default function App() {
   // State tracking for checked questionnaire inputs
   const [selections, setSelections] = useState({});

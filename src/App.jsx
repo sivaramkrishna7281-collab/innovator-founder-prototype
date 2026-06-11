@@ -40,7 +40,7 @@ export default function App() {
   const activeProperty = mockData.properties.find(p => p.id === selectedPropertyId);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans antialiased bg-gradient-to-b from-sky-950 via-slate-950 to-slate-950">
+    <div className="min-h-screen bg-slate-950 bg-gradient-to-b from-cyan-950 via-slate-950 to-slate-950 text-slate-100 font-sans antialiased">
 
       {/* Ocean Blue Dashboard Header Canvas */}
       <header className="bg-gradient-to-r from-cyan-900 via-blue-900 to-indigo-900 border-b border-cyan-800/40 py-6 px-8 sticky top-0 z-50 shadow-xl">

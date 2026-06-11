@@ -40,8 +40,8 @@ export default function App() {
   const activeProperty = mockData.properties.find(p => p.id === selectedPropertyId);
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 font-sans antialiased">
-      
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans antialiased bg-gradient-to-b from-sky-950 via-slate-950 to-slate-950">
+
       {/* Ocean Blue Dashboard Header Canvas */}
       <header className="bg-gradient-to-r from-cyan-900 via-blue-900 to-indigo-900 border-b border-cyan-800/40 py-6 px-8 sticky top-0 z-50 shadow-xl">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -72,9 +72,13 @@ export default function App() {
       </header>
 
       {/* Structured Dashboard Grid */}
+      className="bg-slate-900/80 backdrop-blur-md p-6 rounded-2xl border border-cyan-950/60 shadow-2xl"
+
       <main className="max-w-7xl mx-auto my-8 px-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         {/* Left Side: Property Information & Variables Checklist */}
+        className="bg-slate-900/80 backdrop-blur-md p-6 rounded-2xl border border-cyan-950/60 shadow-2xl"
+
         <section className="lg:col-span-2 space-y-6">
           <div className="bg-slate-850 bg-gradient-to-b from-slate-800 to-slate-900 p-6 rounded-2xl border border-cyan-900/40 shadow-xl">
             <div className="mb-6 border-b border-slate-700/50 pb-4">

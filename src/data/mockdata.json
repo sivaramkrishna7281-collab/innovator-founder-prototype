@@ -1,0 +1,7 @@
+{
+  "complianceMetrics": [
+    { "id": "q1", "category": "Operations", "label": "Operational Processes Documented", "weight": 30 },
+    { "id": "q2", "category": "Legal", "label": "GDPR & Data Privacy Compliant", "weight": 40 },
+    { "id": "q3", "category": "Financial", "label": "3-Year Financial Forecast Complete", "weight": 30 }
+  ]
+ }

@@ -1,37 +1,52 @@
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import mockData from './data/mockData.json';
 
-// Inject Leaflet's map layout stylesheet directly into the document header dynamically
-if (typeof window !== 'undefined' && !document.getElementById('leaflet-css')) {
-  const L_CSS = document.createElement("link");
-  L_CSS.id = "leaflet-css";
-  L_CSS.rel = "stylesheet";
-  L_CSS.href = "https://unpkg.com";
-  document.head.appendChild(L_CSS);
-}
+// Safe Dynamic Map Loader
+function SafeMap({ mapCenter, address }) {
+  const [LoadedMap, setLoadedMap] = useState(null);
 
-// Helper component to smoothly slide the map frame when the active address switches
-function ChangeMapView({ coords }) {
-  const map = useMap();
-  map.setView(coords, 14);
-  return null;
+  useEffect(() => {
+    // Inject Leaflet's essential stylesheet into the document header dynamically
+    if (!document.getElementById('leaflet-css')) {
+      const L_CSS = document.createElement("link");
+      L_CSS.id = "leaflet-css";
+      L_CSS.rel = "stylesheet";
+      L_CSS.href = "https://unpkg.com";
+      document.head.appendChild(L_CSS);
+    }
+
+    // Safely load the map code only once the page has opened inside a browser
+    import('./MapComponent').then((module) => {
+      setLoadedMap(() => module.default);
+    }).catch(err => console.error("Map dynamic loading error: ", err));
+  }, []);
+
+  if (!LoadedMap) {
+    return (
+      <div style={{ height: '100%', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#021627', color: '#64748b', fontSize: '12px' }}>
+        Initializing Geospatial Core Tracking...
+      </div>
+    );
+  }
+
+  const ActiveMap = LoadedMap;
+  return <ActiveMap mapCenter={mapCenter} address={address} />;
 }
 
 export default function App() {
-  // Use the first property item object as the default selected state safe template
-  const defaultProperty = mockData.properties && mockData.properties.length > 0 ? mockData.properties[0] : null;
-  
-  const [selectedPropertyId, setSelectedPropertyId] = useState(defaultProperty ? defaultProperty.id : '');
+  const safeProperties = mockData && mockData.properties ? mockData.properties : [];
+  const [selectedPropertyId, setSelectedPropertyId] = useState("prop-1");
   const [propertyMetrics, setPropertyMetrics] = useState([]);
   const [readinessScore, setReadinessScore] = useState(0);
 
   useEffect(() => {
-    const currentProp = mockData.properties.find(p => p.id === selectedPropertyId);
-    if (currentProp) {
-      setPropertyMetrics(currentProp.metrics);
+    if (safeProperties.length > 0) {
+      const currentProp = safeProperties.find(p => p.id === selectedPropertyId);
+      if (currentProp) {
+        setPropertyMetrics(currentProp.metrics || []);
+      }
     }
-  }, [selectedPropertyId]);
+  }, [selectedPropertyId, safeProperties]);
 
   useEffect(() => {
     let totalWeight = 0;
@@ -54,17 +69,16 @@ export default function App() {
     );
   };
 
-  const activeProperty = mockData.properties.find(p => p.id === selectedPropertyId);
+  const activeProperty = safeProperties.find(p => p.id === selectedPropertyId) || safeProperties;
   const mapCenter = activeProperty && activeProperty.coordinates ? activeProperty.coordinates : [51.4988, -0.1534];
   const currentKpis = activeProperty && activeProperty.kpis ? activeProperty.kpis : { sqft: "0", avgPriceSqft: "0", epc: "-", valuation: "0" };
 
-  // Inline styling containers for deep ocean layout theme
   const styles = {
     wrapper: {
       minHeight: '100vh',
       color: '#f8fafc',
       fontFamily: 'system-ui, -apple-system, sans-serif',
-      backgroundColor: '#031B2F', // Specific Deep Ocean Blue
+      backgroundColor: '#031B2F', 
       backgroundImage: 'linear-gradient(to bottom, #021627, #031B2F, #010c14)',
       paddingBottom: '40px'
     },
@@ -79,7 +93,7 @@ export default function App() {
       gap: '16px'
     },
     heading: {
-      color: '#EF4444', // Red Colour
+      color: '#EF4444', 
       margin: 0,
       fontSize: '26px',
       fontWeight: '900',
@@ -97,7 +111,7 @@ export default function App() {
       backgroundColor: '#0b243a',
       padding: '16px',
       borderRadius: '12px',
-      border: `2px solid ${borderColor}`, // Dynamic alternating border colours
+      border: `2px solid ${borderColor}`, 
       boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)'
     }),
     layoutGrid: {
@@ -117,28 +131,26 @@ export default function App() {
     }
   };
 
-  // Logic to dynamically switch score ring gauges based on current checklist status percentages
   const getGaugeColor = () => {
-    if (readinessScore === 100) return '#10B981'; // Completed: Bright Emerald Green
-    if (readinessScore >= 50) return '#06B6D4';  // Medium: Ocean Cyan Blue
-    return '#F59E0B';                            // Low Input: Warning Amber
+    if (readinessScore === 100) return '#10B981'; 
+    if (readinessScore >= 50) return '#06B6D4';  
+    return '#F59E0B';                            
   };
 
   return (
     <div style={styles.wrapper}>
       
-      {/* Navigation Bar */}
+      {/* Navigation Header Bar */}
       <header style={styles.header}>
         <div>
           <h1 style={styles.heading}>PropVerify Intelligence</h1>
-          <p style={{ color: '#67e8f9', margin: '4px 0 0 0', fontSize: '12px', fontBg: 'bold', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+          <p style={{ color: '#67e8f9', margin: '4px 0 0 0', fontSize: '12px', fontWeight: 'bold', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
             UK HOME OFFICE ENDORSEMENT REVIEW PLATFORM
           </p>
         </div>
 
-        {/* Dynamic Interactive Tab Selectors */}
         <div style={{ display: 'flex', gap: '8px', backgroundColor: 'rgba(0,0,0,0.4)', padding: '6px', borderRadius: '10px' }}>
-          {mockData.properties && mockData.properties.map(p => (
+          {safeProperties.map(p => (
             <button
               key={p.id}
               onClick={() => setSelectedPropertyId(p.id)}
@@ -154,59 +166,50 @@ export default function App() {
                 color: selectedPropertyId === p.id ? '#ffffff' : '#94a3b8'
               }}
             >
-              📍 {p.address ? p.address.split(',')[0] : 'Property'}
+              📍 {p.address ? p.address.split(',') : 'Property'}
             </button>
           ))}
         </div>
       </header>
 
-      {/* AGGREGATED ASSET KPI ROW WITH ALTERNATING BORDERS */}
+      {/* KPI Display Metrics Summary */}
       <section style={styles.kpiGrid}>
-        <div style={styles.kpiCard('#06B6D4')}> {/* Card 1: Neon Cyan */}
+        <div style={styles.kpiCard('#06B6D4')}>
           <span style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 'bold' }}>Internal Area</span>
           <div style={{ fontSize: '22px', fontWeight: '900', marginTop: '4px' }}>{currentKpis.sqft} <span style={{ fontSize: '12px', fontWeight: 'normal', color: '#64748b' }}>sq ft</span></div>
         </div>
-        <div style={styles.kpiCard('#10B981')}> {/* Card 2: Neon Emerald Green */}
+        <div style={styles.kpiCard('#10B981')}>
           <span style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 'bold' }}>Market Valuation</span>
           <div style={{ fontSize: '22px', fontWeight: '900', marginTop: '4px', color: '#10B981' }}>{currentKpis.valuation}</div>
         </div>
-        <div style={styles.kpiCard('#F59E0B')}> {/* Card 3: Neon Amber */}
+        <div style={styles.kpiCard('#F59E0B')}>
           <span style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 'bold' }}>EPC Energy Grade</span>
           <div style={{ fontSize: '22px', fontWeight: '900', marginTop: '4px' }}>Band {currentKpis.epc}</div>
         </div>
-        <div style={styles.kpiCard('#EC4899')}> {/* Card 4: Neon Pink */}
+        <div style={styles.kpiCard('#EC4899')}>
           <span style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 'bold' }}>Rate / SqFt</span>
           <div style={{ fontSize: '22px', fontWeight: '900', marginTop: '4px' }}>{currentKpis.avgPriceSqft}</div>
         </div>
       </section>
 
-      {/* Workspace Content split frame view */}
+      {/* Interactive Main Split Panels */}
       <div style={styles.layoutGrid}>
-        
-        {/* Left Hand Work Panel (2 Columns) */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', gridColumn: 'span 2 / span 2' }}>
           
-          {/* Map canvas Block */}
+          {/* Geospatial Map Container Module Card */}
           <div style={styles.card}>
             <h3 style={{ fontSize: '12px', color: '#94a3b8', margin: '0 0 12px 0', textTransform: 'uppercase', fontWeight: 'bold' }}>Geospatial Asset Context mapping</h3>
             <div style={{ height: '240px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #1e293b' }}>
-              <MapContainer center={mapCenter} zoom={14} style={{ height: '100%', width: '100%' }} zoomControl={false}>
-                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                <Marker position={mapCenter}>
-                  <Popup><span style={{ color: '#000', fontWeight: 'bold' }}>{activeProperty?.address}</span></Popup>
-                </Marker>
-                <ChangeMapView coords={mapCenter} />
-              </MapContainer>
+              <SafeMap mapCenter={mapCenter} address={activeProperty?.address || 'Property'} />
             </div>
           </div>
 
-          {/* Interactive Compliance Audit Checklist */}
           <div style={styles.card}>
             <div style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '12px', marginBottom: '20px' }}>
               <span style={{ fontSize: '10px', backgroundColor: '#021627', color: '#22d3ee', border: '1px solid #0891b2', padding: '2px 8px', borderRadius: '4px', fontWeight: 'bold' }}>
-                {activeProperty?.type}
+                {activeProperty?.type || 'Asset'}
               </span>
-              <h2 style={{ fontSize: '18px', fontWeight: 'bold', margin: '8px 0 0 0' }}>{activeProperty?.address}</h2>
+              <h2 style={{ fontSize: '18px', fontWeight: 'bold', margin: '8px 0 0 0' }}>{activeProperty?.address || 'Select Asset'}</h2>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -229,3 +232,9 @@ export default function App() {
                     type="checkbox" 
                     checked={metric.checked} 
                     onChange={() => {}} 
+                    style={{ width: '18px', height: '18px', marginTop: '2px', cursor: 'pointer' }}
+                  />
+                  <div>
+                    <span style={{ fontSize: '14px', fontWeight: '600', display: 'block' }}>{metric.label}</span>
+                    <span style={{ fontSize: '11px', color: '#64748b', display: 'block', marginTop: '4px' }}>
+                      Category: <strong style={{ color: '#94a3b8' }}>{metric.category}</strong> | Impact: <strong style={{ color: '#06b6d4' }}>+{metric.weight}%</strong>

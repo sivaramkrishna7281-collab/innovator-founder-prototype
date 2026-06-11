@@ -72,14 +72,9 @@ export default function App() {
       </header>
 
       {/* Structured Dashboard Grid */}
-      className="bg-slate-900/80 backdrop-blur-md p-6 rounded-2xl border border-cyan-950/60 shadow-2xl"
-
+      
       <main className="max-w-7xl mx-auto my-8 px-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        {/* Left Side: Property Information & Variables Checklist */}
-        className="bg-slate-900/80 backdrop-blur-md p-6 rounded-2xl border border-cyan-950/60 shadow-2xl"
-
-        <section className="lg:col-span-2 space-y-6">
+<section className="lg:col-span-2 space-y-6">
           <div className="bg-slate-850 bg-gradient-to-b from-slate-800 to-slate-900 p-6 rounded-2xl border border-cyan-900/40 shadow-xl">
             <div className="mb-6 border-b border-slate-700/50 pb-4">
               <span className="text-[10px] bg-cyan-950 text-cyan-400 border border-cyan-800 px-2.5 py-1 rounded font-bold uppercase tracking-wider">

@@ -1,7 +1,10 @@
 {
   "complianceMetrics": [
-    { "id": "q1", "category": "Operations", "label": "Operational Processes Documented", "weight": 30 },
-    { "id": "q2", "category": "Legal", "label": "GDPR & Data Privacy Compliant", "weight": 40 },
-    { "id": "q3", "category": "Financial", "label": "3-Year Financial Forecast Complete", "weight": 30 }
+    { "id": "prop1", "category": "Legal & Title", "label": "HM Land Registry Official Copies & Title Plan Secured", "weight": 25 },
+    { "id": "prop2", "category": "Disclosures", "label": "Law Society Property Information Form (TA6) Completed", "weight": 20 },
+    { "id": "prop3", "category": "Disclosures", "label": "Fittings and Contents Form (TA10) Completed", "weight": 15 },
+    { "id": "prop4", "category": "Environmental", "label": "Valid Energy Performance Certificate (EPC) Uploaded", "weight": 15 },
+    { "id": "prop5", "category": "Financial", "label": "Outstanding Mortgage Redemption Figure Verified", "weight": 15 },
+    { "id": "prop6", "category": "Local Authority", "label": "Local Authority Property Searches Cleared", "weight": 10 }
   ]
- }
+}

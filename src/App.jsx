@@ -40,7 +40,8 @@ export default function App() {
   const activeProperty = mockData.properties.find(p => p.id === selectedPropertyId);
 
   return (
-    <div className="min-h-screen bg-slate-950 bg-gradient-to-b from-cyan-950 via-slate-950 to-slate-950 text-slate-100 font-sans antialiased">
+    <div className="min-h-screen text-slate-100 font-sans antialiased" style={{ backgroundColor: '#021526', backgroundImage: 'linear-gradient(to bottom, #021526, #090d16, #02060d)' }}>
+
 
       {/* Ocean Blue Dashboard Header Canvas */}
       <header className="bg-gradient-to-r from-cyan-900 via-blue-900 to-indigo-900 border-b border-cyan-800/40 py-6 px-8 sticky top-0 z-50 shadow-xl">
@@ -74,7 +75,8 @@ export default function App() {
       {/* Structured Dashboard Grid */}
       
       <main className="max-w-7xl mx-auto my-8 px-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
-<section className="lg:col-span-2 space-y-6">
+<section className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8" style={{ backgroundColor: '#0f172a', padding: '16px', borderRadius: '12px' }}>
+
           <div className="bg-slate-850 bg-gradient-to-b from-slate-800 to-slate-900 p-6 rounded-2xl border border-cyan-900/40 shadow-xl">
             <div className="mb-6 border-b border-slate-700/50 pb-4">
               <span className="text-[10px] bg-cyan-950 text-cyan-400 border border-cyan-800 px-2.5 py-1 rounded font-bold uppercase tracking-wider">
@@ -85,6 +87,8 @@ export default function App() {
             </div>
 
             {/* Checklist Loop Container */}
+            style={{ backgroundColor: '#0f172a', border: '1px solid #1e293b' }}
+
             <div className="space-y-3">
               {propertyMetrics.map((metric) => (
                 <div 

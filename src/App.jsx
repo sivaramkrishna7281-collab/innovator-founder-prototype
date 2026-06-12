@@ -1,231 +1,287 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import mockData from './data/mockData.json';
 
-function App() {
+export default function App() {
+  // Safe Fallback Resolution Array tracking structured data
+  const safeProperties = mockData && mockData.properties ? mockData.properties : [];
+  
+  // State initialization engines utilizing the strict business plan data models
+  const [selectedPropertyId, setSelectedPropertyId] = useState("prop-1");
+  const [propertyMetrics, setPropertyMetrics] = useState([]);
+  const [readinessScore, setReadinessScore] = useState(0);
+  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState("ALL");
+  const [activeForensicOverlay, setActiveForensicOverlay] = useState(null);
+
+  // Sync state cleanly whenever the user toggles the property dropdown selection node
+  useEffect(() => {
+    if (safeProperties.length > 0) {
+      const currentProp = safeProperties.find(p => p.id === selectedPropertyId);
+      if (currentProp) {
+        setPropertyMetrics(currentProp.metrics || []);
+      }
+    }
+  }, [selectedPropertyId, safeProperties]);
+
+  // Comprehensive mathematical scoring logic using exact risk-weighted metrics
+  useEffect(() => {
+    let totalWeight = 0;
+    let earnedWeight = 0;
+
+    propertyMetrics.forEach(metric => {
+      totalWeight += metric.weight;
+      if (metric.checked) {
+        earnedWeight += metric.weight;
+      }
+    });
+
+    const calculated = totalWeight > 0 ? Math.round((earnedWeight / totalWeight) * 100) : 0;
+    setReadinessScore(calculated);
+  }, [propertyMetrics]);
+
+  // Active interaction toggle updating structural arrays in state memory safely
+  const handleToggleMetric = (id) => {
+    setPropertyMetrics(prev =>
+      prev.map(item => item.id === id ? { ...item, checked: !item.checked } : item)
+    );
+  };
+
+  const activeProperty = safeProperties.find(p => p.id === selectedPropertyId) || safeProperties;
+  const currentKpis = activeProperty && activeProperty.kpis ? activeProperty.kpis : { sqft: "0", avgPriceSqft: "0", epc: "-", valuation: "0" };
+
+  // Conditional formatting filter sorting matching category scopes
+  const filteredMetrics = propertyMetrics.filter(metric => {
+    if (selectedCategoryFilter === "ALL") return true;
+    return metric.category === selectedCategoryFilter;
+  });
+
+  // Dynamic vector color selection script for the interactive medium pie chart gauge
+  const getGaugeColor = () => {
+    if (readinessScore === 100) return '#10B981'; // Completed / De-risked: Emerald Green
+    if (readinessScore >= 50) return '#06B6D4';  // Medium Warning / In Progress: Cyan Blue
+    return '#EF4444';                            // High Risk / Blocker State: Red
+  };
+
+  // High-fidelity UI typography, layout grid alignment and color palette configurations
+  const styles = {
+    wrapper: {
+      minHeight: '100vh',
+      color: '#f8fafc',
+      fontFamily: 'system-ui, -apple-system, sans-serif',
+      backgroundColor: '#021526', // Premium Deep Ocean Blue Core
+      backgroundImage: 'linear-gradient(to bottom, #021526, #090d16, #02060d)',
+      paddingBottom: '40px',
+      boxSizing: 'border-box'
+    },
+    header: {
+      backgroundColor: 'rgba(2, 21, 38, 0.9)',
+      borderBottom: '1px solid rgba(6, 182, 212, 0.25)',
+      padding: '20px 32px',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      flexWrap: 'wrap',
+      gap: '16px'
+    },
+    heading: {
+      color: '#EF4444', // Strict Brand Red Heading Target
+      margin: 0,
+      fontSize: '26px',
+      fontWeight: '900',
+      letterSpacing: '-0.025em'
+    },
+    dropdown: {
+      padding: '10px 16px',
+      borderRadius: '8px',
+      fontSize: '13px',
+      fontWeight: 'bold',
+      backgroundColor: '#0b243a',
+      color: '#ffffff',
+      border: '1px solid rgba(6, 182, 212, 0.4)',
+      cursor: 'pointer',
+      outline: 'none',
+      boxShadow: '0 4px 6px -1px rgba(0,0,0,0.2)'
+    },
+    kpiGrid: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+      gap: '16px',
+      maxWidth: '1200px',
+      margin: '32px auto',
+      padding: '0 24px'
+    },
+    kpiCard: (borderColor) => ({
+      backgroundColor: '#0b243a',
+      padding: '20px',
+      borderRadius: '12px',
+      border: `2px solid ${borderColor}`, // Demanded Alternating Neon Borders
+      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.3)',
+      transition: 'all 0.2s'
+    }),
+    layoutGrid: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+      gap: '32px',
+      maxWidth: '1200px',
+      margin: '0 auto',
+      padding: '0 24px'
+    },
+    card: {
+      backgroundColor: '#0b243a',
+      padding: '24px',
+      borderRadius: '16px',
+      border: '1px solid rgba(255,255,255,0.08)',
+      boxShadow: '0 20px 25px -5px rgba(0,0,0,0.4)'
+    },
+    filterTab: (isActive) => ({
+      padding: '6px 12px',
+      borderRadius: '6px',
+      fontSize: '11px',
+      fontWeight: 'bold',
+      border: 'none',
+      cursor: 'pointer',
+      backgroundColor: isActive ? '#06b6d4' : 'rgba(255,255,255,0.05)',
+      color: isActive ? '#ffffff' : '#94a3b8',
+      transition: 'all 0.2s'
+    })
+  };
+
   return (
-    <>
-      <style>{`
-        :root{
-            --ocean-blue:#041E42;
-            --header-red:#E63946;
-            --kpi-1:#00C2FF;
-            --kpi-2:#FFB703;
-            --kpi-3:#06D6A0;
-            --kpi-4:#FF6B6B;
-            --card-bg:rgba(255,255,255,0.08);
-            --card-border:rgba(255,255,255,0.15);
-        }
+    <div style={styles.wrapper}>
+      
+      {/* 1. Technical Typography Navigation Menu Header */}
+      <header style={styles.header}>
+        <div>
+          <h1 style={styles.heading}>PROPREADY OS</h1>
+          <p style={{ color: '#67e8f9', margin: '4px 0 0 0', fontSize: '11px', fontWeight: 'bold', letterSpacing: '0.07em', textTransform: 'uppercase' }}>
+            Live Property Readiness Validation Object Platform
+          </p>
+        </div>
+        
+        {/* Dropdown Menu Node Selector in the top right corner */}
+        <div>
+          <select 
+            style={styles.dropdown}
+            value={selectedPropertyId}
+            onChange={(e) => setSelectedPropertyId(e.target.value)}
+          >
+            {safeProperties.map(p => (
+              <option key={p.id} value={p.id} style={{ backgroundColor: '#021526' }}>
+                📍 {p.address || 'Asset Record'}
+              </option>
+            ))}
+          </select>
+        </div>
+      </header>
 
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:Segoe UI, sans-serif;
-        }
+      {/* 2. Aggregated Asset KPI Cards with Alternating Border Color Assignments */}
+      <section style={styles.kpiGrid}>
+        <div style={styles.kpiCard('#06B6D4')}>
+          <span style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 'bold', letterSpacing: '0.05em' }}>Internal Volume</span>
+          <div style={{ fontSize: '24px', fontWeight: '900', marginTop: '6px', color: '#fff' }}>{currentKpis.sqft} <span style={{ fontSize: '12px', fontWeight: '400', color: '#64748b' }}>sq ft</span></div>
+        </div>
+        <div style={styles.kpiCard('#10B981')}>
+          <span style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 'bold', letterSpacing: '0.05em' }}>Transaction P&L Valuation</span>
+          <div style={{ fontSize: '24px', fontWeight: '900', marginTop: '6px', color: '#10B981' }}>{currentKpis.valuation}</div>
+        </div>
+        <div style={styles.kpiCard('#F59E0B')}>
+          <span style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 'bold', letterSpacing: '0.05em' }}>NTSELAT Energy Grade</span>
+          <div style={{ fontSize: '24px', fontWeight: '900', marginTop: '6px', color: '#F59E0B' }}>Band {currentKpis.epc}</div>
+        </div>
+        <div style={styles.kpiCard('#EC4899')}>
+          <span style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 'bold', letterSpacing: '0.05em' }}>Commercial Rate Value</span>
+          <div style={{ fontSize: '24px', fontWeight: '900', marginTop: '6px', color: '#fff' }}>{currentKpis.avgPriceSqft} <span style={{ fontSize: '12px', fontWeight: '400', color: '#64748b' }}>/ sq ft</span></div>
+        </div>
+      </section>
 
-        body{
-            background:var(--ocean-blue);
-            color:white;
-            padding:30px;
-        }
-
-        .dashboard-title{
-            text-align:center;
-            color:var(--header-red);
-            font-size:36px;
-            font-weight:700;
-            margin-bottom:30px;
-        }
-
-        .kpi-grid{
-            display:grid;
-            grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-            gap:20px;
-            margin-bottom:40px;
-        }
-
-        .kpi-card{
-            background:var(--card-bg);
-            backdrop-filter:blur(8px);
-            border-radius:16px;
-            padding:20px;
-            border:3px solid;
-            box-shadow:0 6px 20px rgba(0,0,0,0.25);
-        }
-
-        .kpi-card:nth-child(1){border-color:var(--kpi-1);}
-        .kpi-card:nth-child(2){border-color:var(--kpi-2);}
-        .kpi-card:nth-child(3){border-color:var(--kpi-3);}
-        .kpi-card:nth-child(4){border-color:var(--kpi-4);}
-
-        .kpi-label{
-            font-size:14px;
-            opacity:.8;
-            margin-bottom:10px;
-        }
-
-        .kpi-value{
-            font-size:34px;
-            font-weight:700;
-        }
-
-        .kpi-trend{
-            margin-top:8px;
-            font-size:14px;
-        }
-
-        .visual-section{
-            display:grid;
-            grid-template-columns:1fr 1fr;
-            gap:25px;
-        }
-
-        .panel{
-            background:var(--card-bg);
-            border:1px solid var(--card-border);
-            border-radius:18px;
-            padding:25px;
-        }
-
-        .panel h3{
-            margin-bottom:20px;
-            color:#ffffff;
-        }
-
-        .pie-wrapper{
-            display:flex;
-            justify-content:center;
-            align-items:center;
-        }
-
-        .pie-chart{
-            width:260px;
-            height:260px;
-            border-radius:50%;
-            background:
-            conic-gradient(
-                #06D6A0 0% 45%,
-                #00C2FF 45% 70%,
-                #FFB703 70% 88%,
-                #E63946 88% 100%
-            );
-            position:relative;
-        }
-
-        .pie-chart::after{
-            content:"";
-            position:absolute;
-            width:120px;
-            height:120px;
-            background:var(--ocean-blue);
-            border-radius:50%;
-            top:50%;
-            left:50%;
-            transform:translate(-50%,-50%);
-        }
-
-        .gauge-container{
-            display:flex;
-            justify-content:center;
-        }
-
-        .gauge{
-            width:280px;
-            height:140px;
-            border-radius:280px 280px 0 0;
-            background:
-            conic-gradient(
-                #E63946 0deg 60deg,
-                #FFB703 60deg 120deg,
-                #06D6A0 120deg 180deg
-            );
-            position:relative;
-            overflow:hidden;
-        }
-
-        .gauge::before{
-            content:"";
-            position:absolute;
-            width:210px;
-            height:105px;
-            background:var(--ocean-blue);
-            border-radius:210px 210px 0 0;
-            bottom:0;
-            left:50%;
-            transform:translateX(-50%);
-        }
-
-        .needle{
-            position:absolute;
-            width:4px;
-            height:100px;
-            background:white;
-            bottom:0;
-            left:50%;
-            transform-origin:bottom center;
-            transform:translateX(-50%) rotate(40deg);
-            z-index:10;
-        }
-
-        .score{
-            text-align:center;
-            margin-top:20px;
-            font-size:34px;
-            font-weight:700;
-            color:#06D6A0;
-        }
-
-        @media(max-width:900px){
-            .visual-section{
-                grid-template-columns:1fr;
-            }
-        }
-      `}</style>
-      <div>
-        <h1 className="dashboard-title">Enterprise Readiness Dashboard</h1>
-
-        <div className="kpi-grid">
-          <div className="kpi-card">
-            <div className="kpi-label">Applications Assessed</div>
-            <div className="kpi-value">128</div>
-            <div className="kpi-trend">▲ 12%</div>
+      {/* 3. Core Workspace Dashboard Layout Grid */}
+      <div style={styles.layoutGrid} className="lg:grid-cols-3">
+        
+        {/* Left Interactive Document Grid Container (Spans 2 Columns via structural layout logic) */}
+        <div className="lg:col-span-2" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          
+          {/* Mock Spatial Geospatial Mapping Feed Component */}
+          <div style={styles.card}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+              <h3 style={{ fontSize: '12px', color: '#94a3b8', margin: 0, textTransform: 'uppercase', fontWeight: 'bold', letterSpacing: '0.05em' }}>
+                Geospatial Mapping Engine Tracking File
+              </h3>
+              <span style={{ fontSize: '10px', color: '#22d3ee', fontWeight: 'bold', backgroundColor: 'rgba(34, 211, 238, 0.1)', padding: '2px 6px', borderRadius: '4px' }}>
+                2D OpenStreetMap Active
+              </span>
+            </div>
+            
+            <div style={{ height: '260px', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <iframe
+                title="Geospatial Mapping Framework Feed"
+                width="100%"
+                height="100%"
+                src={getMapEmbedUrl()}
+                style={{ border: "none", filter: "invert(92%) hue-rotate(180deg) brightness(95%) contrast(90%)" }}
+              />
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px', fontSize: '11px', color: '#64748b' }}>
+              <span>Lat/Long: [{activeProperty?.coordinates ? activeProperty.coordinates.join(', ') : '51.4988, -0.1534'}]</span>
+              <span>SME Compliance Grid v1.0</span>
+            </div>
           </div>
-          <div className="kpi-card">
-            <div className="kpi-label">Migration Ready</div>
-            <div className="kpi-value">82%</div>
-            <div className="kpi-trend">▲ 6%</div>
-          </div>
-          <div className="kpi-card">
-            <div className="kpi-label">Risk Score</div>
-            <div className="kpi-value">18</div>
-            <div className="kpi-trend">▼ 4%</div>
-          </div>
-          <div className="kpi-card">
-            <div className="kpi-label">Compliance Coverage</div>
-            <div className="kpi-value">91%</div>
-            <div className="kpi-trend">▲ 9%</div>
+
+          {/* Interactive Material Information Checklist Evidence Panel */}
+          <div style={styles.card}>
           </div>
         </div>
 
-        <div className="visual-section">
-          <div className="panel">
-            <h3>Readiness Distribution</h3>
-            <div className="pie-wrapper">
-              <div className="pie-chart"></div>
-            </div>
-          </div>
-          <div className="panel">
-            <h3>Overall Readiness Score</h3>
-            <div className="gauge-container">
-              <div className="gauge">
-                <div className="needle"></div>
+        {/* Right Sidebar Readiness Score Gauge Container */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          
+          {/* Readiness Score Gauge Card */}
+          <div style={styles.card}>
+            <h3 style={{ fontSize: '12px', color: '#94a3b8', margin: '0 0 16px 0', textTransform: 'uppercase', fontWeight: 'bold', letterSpacing: '0.05em' }}>
+              Readiness Score
+            </h3>
+            <div style={{ position: 'relative', width: '180px', height: '180px', margin: '0 auto' }}>
+              <svg width="180" height="180" viewBox="0 0 180 180" style={{ transform: 'rotate(-90deg)' }}>
+                <circle cx="90" cy="90" r="80" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="8" />
+                <circle
+                  cx="90"
+                  cy="90"
+                  r="80"
+                  fill="none"
+                  stroke={getGaugeColor()}
+                  strokeWidth="8"
+                  strokeDasharray={`${(readinessScore / 100) * 502.65} 502.65`}
+                  style={{ transition: 'stroke-dasharray 0.3s ease' }}
+                />
+              </svg>
+              <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center' }}>
+                <div style={{ fontSize: '32px', fontWeight: '900', color: getGaugeColor() }}>{readinessScore}%</div>
+                <div style={{ fontSize: '10px', color: '#94a3b8', marginTop: '2px' }}>COMPLETE</div>
               </div>
             </div>
-            <div className="score">78%</div>
+          </div>
+
+          {/* Category Filter Controls */}
+          <div style={styles.card}>
+            <h3 style={{ fontSize: '12px', color: '#94a3b8', margin: '0 0 12px 0', textTransform: 'uppercase', fontWeight: 'bold', letterSpacing: '0.05em' }}>
+              Filter by Category
+            </h3>
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              {['ALL', 'Structural', 'Legal', 'Financial'].map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategoryFilter(cat)}
+                  style={styles.filterTab(selectedCategoryFilter === cat)}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
-export default App;
+function getMapEmbedUrl() {
+  return 'https://www.openstreetmap.org/export/embed.html?bbox=-0.2,51.4,-0.1,51.55&layer=mapnik';
+}

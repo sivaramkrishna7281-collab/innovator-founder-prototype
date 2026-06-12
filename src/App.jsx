@@ -2,13 +2,11 @@ import React, { useState, useEffect } from 'react';
 import mockData from './data/mockData.json';
 
 export default function App() {
-
   const safeProperties = mockData && mockData.properties ? mockData.properties : [];
   const [selectedPropertyId, setSelectedPropertyId] = useState("prop-1");
   const [propertyMetrics, setPropertyMetrics] = useState([]);
   const [readinessScore, setReadinessScore] = useState(0);
 
-  // Synchronize state safely whenever the selected property shifts
   useEffect(() => {
     if (safeProperties.length > 0) {
       const currentProp = safeProperties.find(p => p.id === selectedPropertyId);
@@ -18,7 +16,6 @@ export default function App() {
     }
   }, [selectedPropertyId, safeProperties]);
 
-  // Recalculate compliance scoring algorithms
   useEffect(() => {
     let totalWeight = 0;
     let earnedWeight = 0;
@@ -43,7 +40,6 @@ export default function App() {
   const activeProperty = safeProperties.find(p => p.id === selectedPropertyId) || safeProperties;
   const currentKpis = activeProperty && activeProperty.kpis ? activeProperty.kpis : { sqft: "0", avgPriceSqft: "0", epc: "-", valuation: "0" };
 
-  // Explicit hardcoded address matching logic for the map engine view framing
   const getMapEmbedUrl = () => {
     if (selectedPropertyId === "prop-2") {
       return "https://openstreetmap.org";
@@ -51,7 +47,6 @@ export default function App() {
     if (selectedPropertyId === "prop-3") {
       return "https://openstreetmap.org";
     }
-    // Default Fallback: 14 Belgrave Square, London
     return "https://openstreetmap.org";
   };
 
@@ -121,8 +116,6 @@ export default function App() {
 
   return (
     <div style={styles.wrapper}>
-      
-      {/* Navigation Header */}
       <header style={styles.header}>
         <div>
           <h1 style={styles.heading}>PropVerify Intelligence</h1>
@@ -130,8 +123,6 @@ export default function App() {
             UK HOME OFFICE ENDORSEMENT REVIEW PLATFORM
           </p>
         </div>
-
-        {/* Dynamic Navigation Address Selectors */}
         <div style={{ display: 'flex', gap: '8px', backgroundColor: 'rgba(0,0,0,0.4)', padding: '6px', borderRadius: '10px' }}>
           {safeProperties.map(p => (
             <button
@@ -155,7 +146,6 @@ export default function App() {
         </div>
       </header>
 
-      {/* KPI METRIC BAR ROW */}
       <section style={styles.kpiGrid}>
         <div style={styles.kpiCard('#06B6D4')}>
           <span style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 'bold' }}>Internal Area</span>
@@ -175,13 +165,8 @@ export default function App() {
         </div>
       </section>
 
-      {/* Workspace Display Grid Splits */}
       <div style={styles.layoutGrid}>
-        
-        {/* Left Side (Map Canvas Block + Questionnaire) */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', gridColumn: 'span 2 / span 2' }}>
-          
-          {/* PRODUCTION-READY IMMUNE EMBEDDED GEOSPATIAL ENGINE MAP MAP COMPONENT */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           <div style={styles.card}>
             <h3 style={{ fontSize: '12px', color: '#94a3b8', margin: '0 0 12px 0', textTransform: 'uppercase', fontWeight: 'bold' }}>Geospatial Asset Context mapping</h3>
             <div style={{ height: '260px', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
@@ -189,17 +174,12 @@ export default function App() {
                 title="Geospatial Mapping Feed"
                 width="100%"
                 height="100%"
-                frameBorder="0"
-                scrolling="no"
-                marginHeight="0"
-                marginWidth="0"
                 src={getMapEmbedUrl()}
-                style={{ border: "none", filter: "invert(90%) hue-rotate(180deg) brightness(95%) contrast(90%)" }} // Elegant matching dark mode filter map styling
+                style={{ border: "none", filter: "invert(90%) hue-rotate(180deg) brightness(95%) contrast(90%)" }}
               />
             </div>
           </div>
 
-          {/* Checklist Verification Block */}
           <div style={styles.card}>
             <div style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '12px', marginBottom: '20px' }}>
               <span style={{ fontSize: '10px', backgroundColor: '#021627', color: '#22d3ee', border: '1px solid #0891b2', padding: '2px 8px', borderRadius: '4px', fontWeight: 'bold' }}>
@@ -233,3 +213,21 @@ export default function App() {
                   <div>
                     <span style={{ fontSize: '14px', fontWeight: '600', display: 'block' }}>{metric.label}</span>
                     <span style={{ fontSize: '11px', color: '#64748b', display: 'block', marginTop: '4px' }}>
+                      Category: <strong style={{ color: '#94a3b8' }}>{metric.category}</strong> | Impact: <strong style={{ color: '#06b6d4' }}>+{metric.weight}%</strong>
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div style={styles.card}>
+            <h3 style={{ fontSize: '12px', color: '#94a3b8', margin: '0 0 24px 0', textTransform: 'uppercase', textAlign: 'center', fontWeight: 'bold' }}>
+              Pre-Sale Diagnostics Engine
+            </h3>
+
+            <div style={{ position: 'relative', width: '140px', height: '140px', margin: '0 auto' }}>
+              <svg style={{ transform: 'rotate(-90deg)', width: '100%', height: '100%' }} viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="40" stroke="#021627" strokeWidth="12" fill="transparent" />

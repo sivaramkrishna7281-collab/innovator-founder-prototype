@@ -64,7 +64,7 @@ export default function App() {
   };
 
   // Centralised Inline CSS Core Architecture Theme Palette
-  const styles = {
+    const styles = {
     wrapper: {
       minHeight: '100vh',
       color: '#f8fafc',
@@ -171,6 +171,13 @@ export default function App() {
       gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
       gap: '32px',
       marginTop: '32px'
+    },
+    card: {
+      backgroundColor: '#071828',
+      padding: '24px',
+      borderRadius: '16px',
+      border: '1px solid rgba(255,255,255,0.06)',
+      boxShadow: '0 20px 25px -5px rgba(0,0,0,0.3)'
     }
   };
 

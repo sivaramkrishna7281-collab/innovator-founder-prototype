@@ -166,6 +166,7 @@ export default function App() {
       </section>
 
       <div style={styles.layoutGrid}>
+        {/* Left Side: Map + Checklist */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           <div style={styles.card}>
             <h3 style={{ fontSize: '12px', color: '#94a3b8', margin: '0 0 12px 0', textTransform: 'uppercase', fontWeight: 'bold' }}>Geospatial Asset Context mapping</h3>
@@ -207,13 +208,13 @@ export default function App() {
                   <input 
                     type="checkbox" 
                     checked={metric.checked} 
-                    onChange={() => {}} 
+                    onChange={() => toggleMetric(metric.id)} 
                     style={{ width: '18px', height: '18px', marginTop: '2px', cursor: 'pointer' }}
                   />
                   <div>
                     <span style={{ fontSize: '14px', fontWeight: '600', display: 'block' }}>{metric.label}</span>
                     <span style={{ fontSize: '11px', color: '#64748b', display: 'block', marginTop: '4px' }}>
-                      Category: <strong style={{ color: '#94a3b8' }}>{metric.category}</strong> | Impact: <strong style={{ color: '#06b6d4' }}>+{metric.weight}%</strong>
+                      Category: <strong>{metric.category}</strong> | Impact: <strong>+{metric.weight}%</strong>
                     </span>
                   </div>
                 </div>
@@ -222,6 +223,7 @@ export default function App() {
           </div>
         </div>
 
+        {/* Right Side: Visual Score Counter */}
         <div>
           <div style={styles.card}>
             <h3 style={{ fontSize: '12px', color: '#94a3b8', margin: '0 0 24px 0', textTransform: 'uppercase', textAlign: 'center', fontWeight: 'bold' }}>
@@ -230,4 +232,42 @@ export default function App() {
 
             <div style={{ position: 'relative', width: '140px', height: '140px', margin: '0 auto' }}>
               <svg style={{ transform: 'rotate(-90deg)', width: '100%', height: '100%' }} viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="40" stroke="#021627" strokeWidth="12" fill="transparent" />
+                <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="8" />
+                <circle 
+                  cx="50" 
+                  cy="50" 
+                  r="45" 
+                  fill="none" 
+                  stroke={getGaugeColor()} 
+                  strokeWidth="8"
+                  strokeDasharray={`${readinessScore * 2.827} 282.7`}
+                  strokeLinecap="round"
+                />
+              </svg>
+              <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center' }}>
+                <div style={{ fontSize: '36px', fontWeight: '900', color: getGaugeColor() }}>{readinessScore}</div>
+                <div style={{ fontSize: '10px', color: '#94a3b8', marginTop: '4px' }}>Readiness %</div>
+              </div>
+            </div>
+
+            <div style={{ marginTop: '24px', paddingTop: '24px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+              <div style={{ fontSize: '11px', color: '#94a3b8', fontWeight: 'bold', marginBottom: '12px' }}>SCORE BREAKDOWN</div>
+              {propertyMetrics.length > 0 ? (
+                propertyMetrics.map(metric => (
+                  <div key={metric.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '8px' }}>
+                    <span style={{ color: '#cbd5e1' }}>{metric.label}</span>
+                    <span style={{ color: metric.checked ? '#10B981' : '#64748b', fontWeight: 'bold' }}>
+                      {metric.checked ? `+${metric.weight}%` : '0%'}
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <div style={{ fontSize: '12px', color: '#64748b' }}>No metrics available</div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

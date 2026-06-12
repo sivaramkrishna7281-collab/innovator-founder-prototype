@@ -212,9 +212,22 @@ export default function App() {
       )}
 
       {/* CORE READINESS SCORE VIEW ENVIRONMENT */}
+            {/* RENDER STEP B: LIVE DIAGNOSTIC ENGINE WORKSPACE */}
       {activeTab === 'readiness-core' && (
         <div style={styles.container}>
           
+          {/* Postcode Area Identifier Header Banner */}
+          <div style={{ backgroundColor: '#071c30', border: '1px solid rgba(6, 182, 212, 0.25)', borderRadius: '12px', padding: '14px 24px', mt: '24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div>
+              <span style={{ fontSize: '10px', uppercase: 'true', fontWeight: 'bold', color: '#06b6d4', letterSpacing: '0.05em' }}>Target sector register location</span>
+              <h3 style={{ fontSize: '20px', fontWeight: '900', margin: '2px 0 0 0', color: '#fff' }}>Postcode Area: <span style={{ color: '#ec4899' }}>{mockData.postcode || 'AB12 3CD'}</span></h3>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ height: '8px', w: '8px', backgroundColor: '#10b981', borderRadius: '50%' }}></span>
+              <span style={{ fontSize: '11px', fontWeight: 'bold', color: '#94a3b8' }}>10 Connected Assets Registered</span>
+            </div>
+          </div>
+
           {/* Top Aggregated Real Estate Asset KPI Metrics */}
           <section style={styles.kpiGrid}>
             <div style={styles.kpiCard('#06B6D4')}>
@@ -222,80 +235,134 @@ export default function App() {
               <div style={{ fontSize: '22px', fontWeight: '900', marginTop: '4px' }}>{currentKpis.volume}</div>
             </div>
             <div style={styles.kpiCard('#10B981')}>
-              <span style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 'bold' }}>P&L</span>
-              <div style={{ fontSize: '22px', fontWeight: '900', marginTop: '4px' }}>{currentKpis.pandl}</div>
+              <span style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 'bold' }}>Transaction P&L</span>
+              <div style={{ fontSize: '22px', fontWeight: '900', marginTop: '4px', color: '#10B981' }}>{currentKpis.pandl}</div>
             </div>
             <div style={styles.kpiCard('#F59E0B')}>
               <span style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 'bold' }}>Commercial Rate</span>
               <div style={{ fontSize: '22px', fontWeight: '900', marginTop: '4px' }}>{currentKpis.commercialRate}</div>
             </div>
-            <div style={styles.kpiCard('#8B5CF6')}>
+            <div style={styles.kpiCard('#EC4899')}>
               <span style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 'bold' }}>NTSELAT Grade</span>
               <div style={{ fontSize: '22px', fontWeight: '900', marginTop: '4px' }}>{currentKpis.ntselatGrade}</div>
             </div>
           </section>
 
-          {/* Property Selection & Metrics Dashboard */}
-          <div style={styles.layoutGrid}>
-            <div style={styles.card}>
-              <h3 style={{ fontSize: '16px', fontWeight: '900', marginBottom: '16px', color: '#22d3ee' }}>Property Selection</h3>
-              <select 
-                value={selectedPropertyId} 
-                onChange={(e) => setSelectedPropertyId(e.target.value)}
-                style={{ width: '100%', padding: '10px', borderRadius: '8px', backgroundColor: '#061321', color: '#22d3ee', border: '1px solid rgba(6, 182, 212, 0.3)', fontSize: '14px' }}
-              >
-                {safeProperties.map(prop => (
-                  <option key={prop.id} value={prop.id}>{prop.name}</option>
-                ))}
-              </select>
-            </div>
-
-            <div style={styles.card}>
-              <h3 style={{ fontSize: '16px', fontWeight: '900', marginBottom: '16px', color: '#22d3ee' }}>Readiness Score</h3>
-              <div style={{ fontSize: '48px', fontWeight: '900', color: getGaugeColor(), textAlign: 'center' }}>{readinessScore}%</div>
-            </div>
-          </div>
-
-          {/* Category Filter */}
-          <div style={{ marginTop: '32px', display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-            {['All', 'Legal', 'Financial', 'Compliance'].map(category => (
-              <button 
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                style={{ 
-                  padding: '8px 16px', 
-                  borderRadius: '8px', 
-                  backgroundColor: selectedCategory === category ? 'rgba(6, 182, 212, 0.3)' : 'rgba(6, 182, 212, 0.1)',
-                  border: '1px solid rgba(6, 182, 212, 0.3)',
-                  color: selectedCategory === category ? '#22d3ee' : '#cbd5e1',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                  fontSize: '13px'
-                }}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-
-          {/* Metrics Checklist */}
-          <div style={{ marginTop: '32px', backgroundColor: '#0b243a', padding: '24px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.08)' }}>
-            <h3 style={{ fontSize: '16px', fontWeight: '900', marginBottom: '16px', color: '#22d3ee' }}>Property Metrics</h3>
-            <div style={{ display: 'grid', gap: '12px' }}>
-              {filteredMetrics.map(metric => (
-                <label key={metric.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', backgroundColor: '#061321', borderRadius: '8px', cursor: 'pointer', border: '1px solid rgba(6, 182, 212, 0.1)' }}>
-                  <input 
-                    type="checkbox" 
-                    checked={metric.checked || false}
-                    onChange={() => toggleMetric(metric.id)}
-                    style={{ width: '18px', height: '18px', cursor: 'pointer' }}
-                  />
-                  <div>
-                    <div style={{ fontWeight: 'bold', color: '#cbd5e1' }}>{metric.name}</div>
-                    <div style={{ fontSize: '12px', color: '#64748b' }}>Weight: {metric.weight}</div>
+          {/* Interactive Workspace Area Grid */}
+          <div style={styles.layoutGrid} className="lg:grid-cols-3">
+            
+            {/* Left 2 Columns: Map / Property Asset Lists / Checklists */}
+            <div className="lg:col-span-2" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+              
+              {/* Split Screen Layer: Asset Directory List (Left) + Maps Frame (Right) */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
+                
+                {/* 10 PROPERTY ASSET ITERATION DIRECTORY SELECTOR */}
+                <div style={styles.card}>
+                  <h3 style={{ fontSize: '12px', color: '#94a3b8', margin: '0 0 12px 0', textTransform: 'uppercase', fontWeight: 'bold' }}>Select Unit Under Postcode</h3>
+                  <div style={{ height: '240px', overflowY: 'auto', paddingRight: '4px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    {safeProperties.map((p, idx) => (
+                      <button
+                        key={p.id}
+                        onClick={() => setSelectedPropertyId(p.id)}
+                        style={{
+                          width: '100%',
+                          textAlign: 'left',
+                          padding: '10px 14px',
+                          borderRadius: '8px',
+                          border: selectedPropertyId === p.id ? '1px solid #06b6d4' : '1px solid rgba(255,255,255,0.05)',
+                          backgroundColor: selectedPropertyId === p.id ? 'rgba(6, 182, 212, 0.12)' : 'rgba(255,255,255,0.02)',
+                          color: selectedPropertyId === p.id ? '#22d3ee' : '#cbd5e1',
+                          cursor: 'pointer',
+                          fontSize: '12px',
+                          fontWeight: 'bold',
+                          transition: 'all 0.2s'
+                        }}
+                      >
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <span>🏡 Unit {idx + 1}</span>
+                          <span style={{ fontSize: '10px', opacity: 0.6 }}>{p.type}</span>
+                        </div>
+                        <span style={{ display: 'block', fontSize: '10px', color: '#64748b', fontWeight: 'normal', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {p.address}
+                        </span>
+                      </button>
+                    ))}
                   </div>
-                </label>
-              ))}
+                </div>
+
+                {/* Geospatial Map Context view box */}
+                <div style={styles.card}>
+                  <h3 style={{ fontSize: '12px', color: '#94a3b8', margin: '0 0 12px 0', textTransform: 'uppercase', fontWeight: 'bold' }}>Geospatial Asset Location</h3>
+                  <div style={{ height: '240px', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)' }}>
+                    <iframe title="Geospatial Mapping" width="100%" height="100%" src={getMapEmbedUrl()} style={{ border: "none", filter: "invert(90%) hue-rotate(180deg) brightness(95%) contrast(90%)" }} />
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Requirement Checklists */}
+              <div style={styles.card}>
+                <div style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '12px', marginBottom: '20px' }}>
+                  <span style={{ fontSize: '10px', backgroundColor: '#021627', color: '#22d3ee', border: '1px solid #0891b2', padding: '2px 8px', borderRadius: '4px', fontWeight: 'bold' }}>{activeProperty?.type || 'Asset'}</span>
+                  <h2 style={{ fontSize: '18px', fontWeight: 'bold', margin: '8px 0 0 0' }}>{activeProperty?.address || 'Select Asset'}</h2>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {propertyMetrics.map((metric) => (
+                    <div 
+                      key={metric.id}
+                      onClick={() => toggleMetric(metric.id)}
+                      style={{ display: 'flex', alignItems: 'start', gap: '16px', padding: '14px', borderRadius: '10px', cursor: 'pointer', border: metric.checked ? '1px solid #06b6d4' : '1px solid rgba(255,255,255,0.05)', backgroundColor: metric.checked ? 'rgba(6, 182, 212, 0.05)' : 'rgba(255,255,255,0.02)' }}
+                    >
+                      <input type="checkbox" checked={metric.checked} onChange={() => toggleMetric(metric.id)} style={{ width: '18px', height: '18px', marginTop: '2px', cursor: 'pointer' }} />
+                      <div>
+                        <span style={{ fontSize: '14px', fontWeight: '600', display: 'block' }}>{metric.label}</span>
+                        <span style={{ fontSize: '11px', color: '#64748b', display: 'block', marginTop: '4px' }}>Category: <strong>{metric.category}</strong> | Impact: <strong>+{metric.weight}%</strong></span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+            </div>
+
+            {/* Right 1 Column: Medium Pie Chart Visual Module Card */}
+            <div className="lg:col-span-1">
+              <div style={styles.card}>
+                <h3 style={{ fontSize: '12px', color: '#94a3b8', margin: '0 0 24px 0', textTransform: 'uppercase', textAlign: 'center', fontWeight: 'bold' }}>Pre-Sale Diagnostics Engine</h3>
+                
+                {/* ADVANCED VECTOR PIE CHART GAUGE WITH INTUITIVE TRANSITIONS */}
+                <div style={{ position: 'relative', width: '140px', height: '140px', margin: '0 auto' }}>
+                  <svg style={{ transform: 'rotate(-90deg)', width: '100%', height: '100%' }} viewBox="0 0 100 100">
+                    {/* Background Circle Rail Track */}
+                    <circle cx="50" cy="50" r="40" stroke="#021627" strokeWidth="12" fill="transparent" />
+                    {/* Dynamic Vector Core Ring with CSS ease-out Interpolation Animation */}
+                    <circle 
+                      cx="50" cy="50" r="40" 
+                      stroke={getGaugeColor()} 
+                      strokeWidth="12" 
+                      fill="transparent" 
+                      strokeDasharray="251.3" 
+                      strokeDashoffset={251.3 - (251.3 * readinessScore) / 100} 
+                      strokeLinecap="round" 
+                      style={{ 
+                        transition: 'stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.4s ease-in-out' 
+                      }} 
+                    />
+                  </svg>
+                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                    <span style={{ fontSize: '28px', fontWeight: '900', color: '#ffffff', transition: 'all 0.3s ease' }}>{readinessScore}%</span>
+                    <span style={{ fontSize: '9px', textTransform: 'uppercase', color: '#67e8f9', fontWeight: 'bold', marginTop: '2px' }}>Audited</span>
+                  </div>
+                </div>
+
+                <div style={{ marginTop: '24px', textAlign: 'center' }}>
+                  <span style={{ fontSize: '12px', color: '#94a3b8', lineHeight: '1.5' }}>
+                    Readiness gauge, live diagnostics, and audit status for the selected asset.
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

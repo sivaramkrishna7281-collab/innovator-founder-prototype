@@ -1,58 +1,15 @@
 {
+  "postcode": "AB12 3CD",
   "properties": [
-    {
-      "id": "prop-1",
-      "address": "14 Belgrave Square, London SW1X",
-      "type": "Residential Townhouse",
-      "coordinates": [51.4988, -0.1534],
-      "kpis": {
-        "volume": "12,750 m³",
-        "pandl": "+£1,420,000",
-        "commercialRate": "£2,100/sq ft",
-        "ntselatGrade": "Grade A"
-      },
-      "metrics": [
-        { "id": "m1", "category": "Legal & Title", "label": "HM Land Registry Title Plan & Register Copies Secured", "weight": 25, "checked": true },
-        { "id": "m2", "category": "Disclosures", "label": "Law Society Property Information Form (TA6) Completed", "weight": 25, "checked": true },
-        { "id": "m3", "category": "Environmental", "label": "Valid Energy Performance Certificate (EPC) Generated", "weight": 25, "checked": false },
-        { "id": "m4", "category": "Financial", "label": "Verified Outstanding Mortgage Redemption Figures", "weight": 25, "checked": false }
-      ]
-    },
-    {
-      "id": "prop-2",
-      "address": "88 Colmore Row, Birmingham B3",
-      "type": "Luxury Penthouse Suite",
-      "coordinates": [52.4804, -1.9015],
-      "kpis": {
-        "volume": "5,550 m³",
-        "pandl": "+£385,000",
-        "commercialRate": "£650/sq ft",
-        "ntselatGrade": "Grade B"
-      },
-      "metrics": [
-        { "id": "m1", "category": "Legal & Title", "label": "HM Land Registry Title Plan & Register Copies Secured", "weight": 25, "checked": true },
-        { "id": "m2", "category": "Disclosures", "label": "Law Society Property Information Form (TA6) Completed", "weight": 25, "checked": true },
-        { "id": "m3", "category": "Environmental", "label": "Valid Energy Performance Certificate (EPC) Generated", "weight": 25, "checked": true },
-        { "id": "m4", "category": "Financial", "label": "Verified Outstanding Mortgage Redemption Figures", "weight": 25, "checked": true }
-      ]
-    },
-    {
-      "id": "prop-3",
-      "address": "32 Quay Street, Manchester M3",
-      "type": "Duplex Conversion Unit",
-      "coordinates": [53.4789, -2.2531],
-      "kpis": {
-        "volume": "3,600 m³",
-        "pandl": "+£120,000",
-        "commercialRate": "£450/sq ft",
-        "ntselatGrade": "Grade C"
-      },
-      "metrics": [
-        { "id": "m1", "category": "Legal & Title", "label": "HM Land Registry Title Plan & Register Copies Secured", "weight": 25, "checked": false },
-        { "id": "m2", "category": "Disclosures", "label": "Law Society Property Information Form (TA6) Completed", "weight": 25, "checked": false },
-        { "id": "m3", "category": "Environmental", "label": "Valid Energy Performance Certificate (EPC) Generated", "weight": 25, "checked": true },
-        { "id": "m4", "category": "Financial", "label": "Verified Outstanding Mortgage Redemption Figures", "weight": 25, "checked": false }
-      ]
-    }
+    { "id": "p1", "address": "Flat 1, 14 Belgrave Square, London AB12 3CD", "type": "Studio Apartment", "coordinates": [51.4988, -0.1534], "kpis": { "volume": "240 m³", "pandl": "+£45,000", "commercialRate": "£1,100/sq ft", "ntselatGrade": "Grade A" }, "metrics": [{ "id": "m1", "category": "Legal & Title", "label": "HM Land Registry Copies Secured", "weight": 50, "checked": true }, { "id": "m2", "category": "Environmental", "label": "Valid Energy Performance Certificate", "weight": 50, "checked": false }] },
+    { "id": "p2", "address": "Flat 2, 14 Belgrave Square, London AB12 3CD", "type": "Studio Apartment", "coordinates": [51.4988, -0.1534], "kpis": { "volume": "260 m³", "pandl": "+£52,000", "commercialRate": "£1,150/sq ft", "ntselatGrade": "Grade A" }, "metrics": [{ "id": "m1", "category": "Legal & Title", "label": "HM Land Registry Copies Secured", "weight": 50, "checked": true }, { "id": "m2", "category": "Environmental", "label": "Valid Energy Performance Certificate", "weight": 50, "checked": true }] },
+    { "id": "p3", "address": "Flat 3, 14 Belgrave Square, London AB12 3CD", "type": "1-Bed Apartment", "coordinates": [51.4988, -0.1534], "kpis": { "volume": "420 m³", "pandl": "+£85,000", "commercialRate": "£1,200/sq ft", "ntselatGrade": "Grade B" }, "metrics": [{ "id": "m1", "category": "Legal & Title", "label": "HM Land Registry Copies Secured", "weight": 50, "checked": false }, { "id": "m2", "category": "Environmental", "label": "Valid Energy Performance Certificate", "weight": 50, "checked": false }] },
+    { "id": "p4", "address": "Flat 4, 14 Belgrave Square, London AB12 3CD", "type": "1-Bed Apartment", "coordinates": [51.4988, -0.1534], "kpis": { "volume": "450 m³", "pandl": "+£90,000", "commercialRate": "£1,200/sq ft", "ntselatGrade": "Grade B" }, "metrics": [{ "id": "m1", "category": "Legal & Title", "label": "HM Land Registry Copies Secured", "weight": 50, "checked": true }, { "id": "m2", "category": "Environmental", "label": "Valid Energy Performance Certificate", "weight": 50, "checked": false }] },
+    { "id": "p5", "address": "Flat 5, 14 Belgrave Square, London AB12 3CD", "type": "2-Bed Penthouse", "coordinates": [51.4988, -0.1534], "kpis": { "volume": "780 m³", "pandl": "+£165,000", "commercialRate": "£1,450/sq ft", "ntselatGrade": "Grade A" }, "metrics": [{ "id": "m1", "category": "Legal & Title", "label": "HM Land Registry Copies Secured", "weight": 50, "checked": true }, { "id": "m2", "category": "Environmental", "label": "Valid Energy Performance Certificate", "weight": 50, "checked": true }] },
+    { "id": "p6", "address": "Flat 6, 14 Belgrave Square, London AB12 3CD", "type": "2-Bed Penthouse", "coordinates": [51.4988, -0.1534], "kpis": { "volume": "800 m³", "pandl": "+£175,000", "commercialRate": "£1,450/sq ft", "ntselatGrade": "Grade A" }, "metrics": [{ "id": "m1", "category": "Legal & Title", "label": "HM Land Registry Copies Secured", "weight": 50, "checked": false }, { "id": "m2", "category": "Environmental", "label": "Valid Energy Performance Certificate", "weight": 50, "checked": true }] },
+    { "id": "p7", "address": "Flat 7, 14 Belgrave Square, London AB12 3CD", "type": "Studio Apartment", "coordinates": [51.4988, -0.1534], "kpis": { "volume": "235 m³", "pandl": "+£42,000", "commercialRate": "£1,100/sq ft", "ntselatGrade": "Grade B" }, "metrics": [{ "id": "m1", "category": "Legal & Title", "label": "HM Land Registry Copies Secured", "weight": 50, "checked": true }, { "id": "m2", "category": "Environmental", "label": "Valid Energy Performance Certificate", "weight": 50, "checked": false }] },
+    { "id": "p8", "address": "Flat 8, 14 Belgrave Square, London AB12 3CD", "type": "1-Bed Maisonette", "coordinates": [51.4988, -0.1534], "kpis": { "volume": "510 m³", "pandl": "+£110,000", "commercialRate": "£1,250/sq ft", "ntselatGrade": "Grade B" }, "metrics": [{ "id": "m1", "category": "Legal & Title", "label": "HM Land Registry Copies Secured", "weight": 50, "checked": true }, { "id": "m2", "category": "Environmental", "label": "Valid Energy Performance Certificate", "weight": 50, "checked": true }] },
+    { "id": "p9", "address": "Flat 9, 14 Belgrave Square, London AB12 3CD", "type": "3-Bed Triplex", "coordinates": [51.4988, -0.1534], "kpis": { "volume": "1,450 m³", "pandl": "+£320,000", "commercialRate": "£1,650/sq ft", "ntselatGrade": "Grade A" }, "metrics": [{ "id": "m1", "category": "Legal & Title", "label": "HM Land Registry Copies Secured", "weight": 50, "checked": false }, { "id": "m2", "category": "Environmental", "label": "Valid Energy Performance Certificate", "weight": 50, "checked": false }] },
+    { "id": "p10", "address": "Flat 10, 14 Belgrave Square, London AB12 3CD", "type": "3-Bed Triplex", "coordinates": [51.4988, -0.1534], "kpis": { "volume": "1,500 m³", "pandl": "+£340,000", "commercialRate": "£1,650/sq ft", "ntselatGrade": "Grade A" }, "metrics": [{ "id": "m1", "category": "Legal & Title", "label": "HM Land Registry Copies Secured", "weight": 50, "checked": true }, { "id": "m2", "category": "Environmental", "label": "Valid Energy Performance Certificate", "weight": 50, "checked": true }] }
   ]
 }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import mockData from './data/mockData.json';
 
 export default function App() {
+
   const safeProperties = mockData && mockData.properties ? mockData.properties : [];
   const [selectedPropertyId, setSelectedPropertyId] = useState("prop-1");
   const [propertyMetrics, setPropertyMetrics] = useState([]);
